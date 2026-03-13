@@ -60,6 +60,11 @@ class InvestmentCalculatorViewModel : ViewModel() {
 
             if (hasError) return
 
+            // Safe to use non-null values now
+            val principalValue = p!!
+            val rateValue = r!!
+            val timeValue = t!!
+
             val n = when (compoundFrequency.value) {
                 "Annually" -> 1
                 "Semi-Annually" -> 2
@@ -69,18 +74,18 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 else -> 12
             }
 
-            val rateDecimal = r / 100
-            val futureValue = p * (1 + rateDecimal / n).pow(n * t)
-            val totalInterest = futureValue - p
+            val rateDecimal = rateValue / 100
+            val futureValue = principalValue * (1 + rateDecimal / n).pow(n * timeValue)
+            val totalInterest = futureValue - principalValue
 
             result.value = CalculationResult(
-                principal = p,
-                rate = r,
-                time = t,
+                principal = principalValue,
+                rate = rateValue,
+                time = timeValue,
                 compoundFrequency = n,
                 futureValue = futureValue,
                 totalInterest = totalInterest,
-                totalInvested = p,
+                totalInvested = principalValue,
                 calculationType = "Compound Interest"
             )
         } catch (e: Exception) {
@@ -118,18 +123,23 @@ class InvestmentCalculatorViewModel : ViewModel() {
 
             if (hasError) return
 
-            val rateDecimal = r / 100
-            val totalInterest = p * rateDecimal * t
-            val futureValue = p + totalInterest
+            // Safe to use non-null values now
+            val principalValue = p!!
+            val rateValue = r!!
+            val timeValue = t!!
+
+            val rateDecimal = rateValue / 100
+            val totalInterest = principalValue * rateDecimal * timeValue
+            val futureValue = principalValue + totalInterest
 
             result.value = CalculationResult(
-                principal = p,
-                rate = r,
-                time = t,
+                principal = principalValue,
+                rate = rateValue,
+                time = timeValue,
                 compoundFrequency = 1,
                 futureValue = futureValue,
                 totalInterest = totalInterest,
-                totalInvested = p,
+                totalInvested = principalValue,
                 calculationType = "Simple Interest"
             )
         } catch (e: Exception) {
@@ -167,8 +177,12 @@ class InvestmentCalculatorViewModel : ViewModel() {
 
             if (hasError) return
 
-            val monthlyRate = r / 100 / 12
-            val totalMonths = (t * 12).toInt()
+            // Safe to use non-null values now
+            val rateValue = r!!
+            val timeValue = t!!
+
+            val monthlyRate = rateValue / 100 / 12
+            val totalMonths = (timeValue * 12).toInt()
             val totalPrincipal = monthlyInvestment * totalMonths
 
             val futureValue = if (monthlyRate > 0) {
@@ -181,8 +195,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
 
             result.value = CalculationResult(
                 principal = totalPrincipal,
-                rate = r,
-                time = t,
+                rate = rateValue,
+                time = timeValue,
                 compoundFrequency = 12,
                 futureValue = futureValue,
                 totalInterest = totalInterest,
