@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Investment Calculator</string>
+    <string name="app_title">Investment Calculator</string>
+    <string name="app_subtitle">Calculate your future investment value</string>
+
+    <!-- Hints -->
+    <string name="hint_principal">Principal Amount</string>
+    <string name="hint_rate">Annual Interest Rate (%)</string>
+    <string name="hint_time">Time Period (Years)</string>
+    <string name="hint_monthly_sip">Monthly Investment (SIP)</string>
+
+    <!-- Labels -->
+    <string name="label_frequency">Compounding Frequency</string>
+    <string name="label_future_value">Future Value</string>
+    <string name="label_interest">Total Interest</string>
+
+    <!-- Buttons -->
+    <string name="btn_compound">Calculate Compound Interest</string>
+    <string name="btn_simple">Calculate Simple Interest</string>
+    <string name="btn_sip">Calculate SIP</string>
+    <string name="btn_clear">Clear All</string>
+
+    <!-- Error Messages -->
+    <string name="error_empty_field">Please fill all required fields</string>
+    <string name="error_invalid_input">Invalid input value</string>
+
+</resources>
