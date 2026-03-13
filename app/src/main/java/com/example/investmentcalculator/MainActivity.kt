@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
                 val animatedValue = (animation.animatedValue as Float).toDouble()
                 targetView.text = prefix + formatNumber(animatedValue)
             }
-            addListener(object : android.animation.AnimatorListenerAdapter {
+            addListener(object : android.animation.AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: android.animation.Animator) {
                     // Ensure final value is set correctly
                     targetView.text = prefix + formatNumber(endValue)
