@@ -9,7 +9,7 @@
         <item name="colorSecondaryVariant">@color/secondary_variant</item>
         <item name="colorError">@color/error</item>
         <item name="colorErrorContainer">@color/error_container</item>
-        <item name="colorBackground">@color/bg_primary</item>
+        <item name="android:colorBackground">@color/bg_primary</item>
         <item name="colorSurface">@color/surface</item>
 
         <item name="android:statusBarColor">@color/primary</item>
