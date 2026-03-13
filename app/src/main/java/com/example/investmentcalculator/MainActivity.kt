@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -296,8 +297,8 @@ class MainActivity : AppCompatActivity() {
             // Legend
             legend.apply {
                 textColor = ContextCompat.getColor(this@MainActivity, R.color.text_primary)
-                orientation = LineChart.LegendOrientation.HORIZONTAL
-                horizontalAlignment = LineChart.LegendHorizontalAlignment.CENTER
+                orientation = Legend.LegendOrientation.HORIZONTAL
+                horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
             }
 
             // Description
