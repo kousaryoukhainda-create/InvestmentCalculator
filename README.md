@@ -15,7 +15,12 @@ A native Android application for calculating investment returns with support for
 
 - **SIP Calculator**: Systematic Investment Plan calculator for recurring investments
 
-- **Material Design UI**: Modern and intuitive user interface with Material 3 design
+- **Multi-Currency Support**: Choose from 10 different currencies
+  - USD ($), EUR (€), GBP (£), INR (₹)
+  - JPY (¥), CNY (¥), AUD (A$), CAD (C$)
+  - CHF (Fr), KRW (₩)
+
+- **Compact Material Design UI**: Optimized layout maximizing screen space with Material 3 design
 
 - **Real-time Validation**: Input validation with helpful error messages
 
@@ -168,7 +173,6 @@ The app uses a Material Design dark theme with the following colors:
 - [ ] Add tax calculation
 - [ ] Export results to PDF
 - [ ] Dark/Light mode toggle
-- [ ] Multiple currency support
 - [ ] Graph visualization of results
 
 ## License

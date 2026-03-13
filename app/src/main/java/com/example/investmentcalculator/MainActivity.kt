@@ -44,6 +44,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUI() {
+        // Setup currency spinner
+        val currencyCodes = resources.getStringArray(R.array.currency_codes)
+        val currencyAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, currencyCodes)
+        currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerCurrency.adapter = currencyAdapter
+
         // Setup compound frequency spinner
         val frequencies = arrayOf("Annually", "Semi-Annually", "Quarterly", "Monthly", "Daily")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, frequencies)
@@ -88,6 +94,18 @@ class MainActivity : AppCompatActivity() {
             listOf(R.id.chip6pct, R.id.chip8pct, R.id.chip10pct, R.id.chip12pct, R.id.chip15pct).forEach { id ->
                 binding.root.findViewById<Chip>(id).isChecked = false
             }
+        }
+
+        // Currency spinner listener
+        binding.spinnerCurrency.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedCurrency = currencyCodes[position]
+                viewModel.selectedCurrency.value = selectedCurrency
+                // Update hints with currency symbol
+                updateCurrencyHints(selectedCurrency)
+            }
+
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
     }
 
@@ -139,13 +157,13 @@ class MainActivity : AppCompatActivity() {
         animateResultCard()
 
         binding.tvCalculationType.text = result.calculationType
-        binding.tvPrincipal.text = formatCurrency(result.totalInvested)
+        binding.tvPrincipal.text = formatCurrency(result.totalInvested, result.currencySymbol)
         binding.tvRate.text = "${result.rate}%"
         binding.tvTime.text = "${result.time} ${if (result.time == 1.0) "year" else "years"}"
-        
+
         // Count-up animation for future value and interest
-        animateCountUp(binding.tvFutureValue, 0.0, result.futureValue)
-        animateCountUp(binding.tvTotalInterest, 0.0, result.totalInterest, prefix = "+ ")
+        animateCountUp(binding.tvFutureValue, 0.0, result.futureValue, prefix = result.currencySymbol)
+        animateCountUp(binding.tvTotalInterest, 0.0, result.totalInterest, prefix = "+ ${result.currencySymbol}")
 
         // Scroll to results with animation
         binding.scrollView.post {
@@ -178,16 +196,31 @@ class MainActivity : AppCompatActivity() {
 
     private fun animateCountUp(targetView: android.widget.TextView, startValue: Double, endValue: Double, prefix: String = "") {
         countUpAnimator?.cancel()
-        
+
         countUpAnimator = ValueAnimator.ofFloat(startValue.toFloat(), endValue.toFloat()).apply {
             duration = 1200
             interpolator = AccelerateDecelerateInterpolator()
             addUpdateListener { animation ->
                 val animatedValue = (animation.animatedValue as Float).toDouble()
-                targetView.text = prefix + formatCurrency(animatedValue)
+                targetView.text = prefix + formatNumber(animatedValue)
             }
             start()
         }
+    }
+
+    private fun updateCurrencyHints(currencyCode: String) {
+        val symbol = viewModel.getCurrencySymbol(currencyCode)
+        binding.tilPrincipal.hint = "${getString(R.string.hint_principal)} ($symbol)"
+        binding.tilMonthlySIP.hint = "${getString(R.string.hint_monthly_sip)} ($symbol)"
+    }
+
+    private fun formatCurrency(amount: Double, currencySymbol: String = "₹"): String {
+        val formatted = indianFormat.format(amount)
+        return "$currencySymbol$formatted"
+    }
+
+    private fun formatNumber(amount: Double): String {
+        return indianFormat.format(amount)
     }
 
     private fun setupPresetChips() {
@@ -286,7 +319,9 @@ class MainActivity : AppCompatActivity() {
                 gridColor = ContextCompat.getColor(this@MainActivity, R.color.divider)
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
-                        return "₹${(value / 100000).toInt()}L"
+                        val currencySymbol = viewModel.getCurrencySymbol(viewModel.selectedCurrency.value ?: "INR")
+                        val amount = (value / 100000).toInt()
+                        return "$currencySymbol${amount}L"
                     }
                 }
             }
@@ -365,7 +400,7 @@ class MainActivity : AppCompatActivity() {
         binding.etPrincipal.setText(viewModel.principal.value)
         binding.etRate.setText(viewModel.annualRate.value)
         binding.etTime.setText(viewModel.timeYears.value)
-        
+
         val freqIndex = when(viewModel.compoundFrequency.value) {
             "Annually" -> 0
             "Semi-Annually" -> 1
@@ -375,5 +410,13 @@ class MainActivity : AppCompatActivity() {
             else -> 3
         }
         binding.spinnerCompoundFrequency.setSelection(freqIndex)
+
+        // Restore currency selection
+        val currencyCodes = resources.getStringArray(R.array.currency_codes)
+        val currencyIndex = currencyCodes.indexOf(viewModel.selectedCurrency.value)
+        if (currencyIndex >= 0) {
+            binding.spinnerCurrency.setSelection(currencyIndex)
+            updateCurrencyHints(viewModel.selectedCurrency.value ?: "INR")
+        }
     }
 }

@@ -12,7 +12,8 @@ data class CalculationResult(
     val futureValue: Double = 0.0,
     val totalInterest: Double = 0.0,
     val totalInvested: Double = 0.0,
-    val calculationType: String = "Compound Interest"
+    val calculationType: String = "Compound Interest",
+    val currencySymbol: String = "₹"
 )
 
 data class GrowthData(
@@ -28,6 +29,7 @@ class InvestmentCalculatorViewModel : ViewModel() {
     val annualRate = MutableLiveData<String>("")
     val timeYears = MutableLiveData<String>("")
     val compoundFrequency = MutableLiveData<String>("Monthly")
+    val selectedCurrency = MutableLiveData<String>("INR")
     val result = MutableLiveData<CalculationResult?>(null)
     val growthData = MutableLiveData<List<GrowthData>>(emptyList())
 
@@ -86,6 +88,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
             val futureValue = principalValue * (1 + rateDecimal / n).pow(n * timeValue)
             val totalInterest = futureValue - principalValue
 
+            val currencySymbol = getCurrencySymbol(selectedCurrency.value ?: "INR")
+
             result.value = CalculationResult(
                 principal = principalValue,
                 rate = rateValue,
@@ -94,7 +98,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 futureValue = futureValue,
                 totalInterest = totalInterest,
                 totalInvested = principalValue,
-                calculationType = "Compound Interest"
+                calculationType = "Compound Interest",
+                currencySymbol = currencySymbol
             )
 
             // Generate year-by-year growth data for chart
@@ -173,6 +178,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
             val totalInterest = principalValue * rateDecimal * timeValue
             val futureValue = principalValue + totalInterest
 
+            val currencySymbol = getCurrencySymbol(selectedCurrency.value ?: "INR")
+
             result.value = CalculationResult(
                 principal = principalValue,
                 rate = rateValue,
@@ -181,7 +188,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 futureValue = futureValue,
                 totalInterest = totalInterest,
                 totalInvested = principalValue,
-                calculationType = "Simple Interest"
+                calculationType = "Simple Interest",
+                currencySymbol = currencySymbol
             )
         } catch (e: Exception) {
             errorMessage.value = "error_calculation"
@@ -234,6 +242,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
 
             val totalInterest = futureValue - totalPrincipal
 
+            val currencySymbol = getCurrencySymbol(selectedCurrency.value ?: "INR")
+
             result.value = CalculationResult(
                 principal = totalPrincipal,
                 rate = rateValue,
@@ -242,7 +252,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 futureValue = futureValue,
                 totalInterest = totalInterest,
                 totalInvested = totalPrincipal,
-                calculationType = "SIP (Systematic Investment Plan)"
+                calculationType = "SIP (Systematic Investment Plan)",
+                currencySymbol = currencySymbol
             )
 
             // Generate year-by-year growth data for chart
@@ -273,5 +284,21 @@ class InvestmentCalculatorViewModel : ViewModel() {
     private fun showError(message: String) {
         errorMessage.value = message
         result.value = null
+    }
+
+    fun getCurrencySymbol(currencyCode: String): String {
+        return when (currencyCode) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "GBP" -> "£"
+            "INR" -> "₹"
+            "JPY" -> "¥"
+            "CNY" -> "¥"
+            "AUD" -> "A$"
+            "CAD" -> "C$"
+            "CHF" -> "Fr"
+            "KRW" -> "₩"
+            else -> "$"
+        }
     }
 }

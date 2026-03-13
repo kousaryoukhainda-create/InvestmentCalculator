@@ -7,51 +7,44 @@
     android:layout_height="match_parent"
     android:background="@color/bg_primary">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/surface"
-        app:elevation="0dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:paddingTop="16dp">
-
-            <TextView
-                android:id="@+id/tvAppTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/app_title"
-                style="@style/HeadingText" />
-
-            <TextView
-                android:id="@+id/tvAppSubtitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/app_subtitle"
-                style="@style/SubheadingText"
-                android:layout_marginTop="4dp" />
-
-        </LinearLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="12dp">
+
+            <!-- Currency Selector Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/label_currency"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinnerCurrency"
+                    android:layout_width="140dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/currency_spinner_bg"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
+
+            </LinearLayout>
 
             <!-- Input Card -->
             <com.google.android.material.card.MaterialCardView
@@ -59,13 +52,13 @@
                 style="@style/InputCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="12dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="16dp">
 
                     <!-- Principal Input -->
                     <com.google.android.material.textfield.TextInputLayout
@@ -73,7 +66,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_principal"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="12dp"
                         app:startIconDrawable="@drawable/ic_currency"
                         app:startIconTint="@color/primary"
                         app:boxBackgroundMode="outline"
@@ -124,17 +117,17 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_preset_rates"
                         android:textColor="@color/text_secondary"
-                        android:textSize="12sp"
-                        android:layout_marginBottom="8dp" />
+                        android:textSize="11sp"
+                        android:layout_marginBottom="6dp" />
 
                     <com.google.android.material.chip.ChipGroup
                         android:id="@+id/chipGroupRates"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="12dp"
                         app:singleSelection="true"
                         app:selectionRequired="false"
-                        app:chipSpacingHorizontal="8dp"
+                        app:chipSpacingHorizontal="6dp"
                         app:chipSpacingVertical="4dp">
 
                         <com.google.android.material.chip.Chip
@@ -185,7 +178,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_time"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="12dp"
                         app:startIconDrawable="@drawable/ic_time"
                         app:startIconTint="@color/primary"
                         app:boxBackgroundMode="outline"
@@ -210,13 +203,13 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_frequency"
                         android:textColor="@color/text_secondary"
-                        android:textSize="14sp"
-                        android:layout_marginBottom="8dp" />
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="12dp"
                         app:cardBackgroundColor="@color/input_background"
                         app:cardCornerRadius="12dp"
                         app:strokeColor="@color/divider"
@@ -225,7 +218,7 @@
                         <Spinner
                             android:id="@+id/spinnerCompoundFrequency"
                             android:layout_width="match_parent"
-                            android:layout_height="52dp"
+                            android:layout_height="44dp"
                             android:paddingStart="16dp"
                             android:paddingEnd="16dp"
                             android:background="@android:color/transparent" />
@@ -260,51 +253,68 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Action Buttons -->
-            <LinearLayout
+            <!-- Action Buttons - Compact Grid Layout -->
+            <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="20dp">
+                android:columnCount="2"
+                android:rowCount="2"
+                android:layout_marginBottom="12dp">
 
                 <Button
                     android:id="@+id/btnCalculateCompound"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_compound"
-                    android:layout_marginBottom="12dp"
+                    android:layout_columnWeight="1"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/btn_compound_short"
                     style="@style/PrimaryButton"
+                    android:textSize="12sp"
                     app:icon="@drawable/ic_calculate"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    app:iconSize="18dp" />
 
                 <Button
                     android:id="@+id/btnCalculateSimple"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_simple"
-                    android:layout_marginBottom="12dp"
+                    android:layout_columnWeight="1"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/btn_simple_short"
                     style="@style/SecondaryButton"
+                    android:textSize="12sp"
                     app:icon="@drawable/ic_calculate"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    app:iconSize="18dp" />
 
                 <Button
                     android:id="@+id/btnCalculateSIP"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/btn_sip"
-                    android:layout_marginBottom="12dp"
+                    android:layout_columnWeight="1"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/btn_sip_short"
                     style="@style/SecondaryButton"
+                    android:textSize="12sp"
                     app:icon="@drawable/ic_sip"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    app:iconSize="18dp" />
 
                 <Button
                     android:id="@+id/btnClear"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@string/btn_clear"
-                    style="@style/OutlinedButton" />
+                    style="@style/OutlinedButton"
+                    android:textSize="12sp" />
 
-            </LinearLayout>
+            </GridLayout>
 
             <!-- Result Card -->
             <com.google.android.material.card.MaterialCardView
@@ -312,7 +322,7 @@
                 style="@style/ResultCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="12dp"
                 android:visibility="gone"
                 app:cardBackgroundColor="@color/gradient_start">
 
@@ -320,24 +330,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="24dp">
+                    android:padding="16dp">
 
                     <TextView
                         android:id="@+id/tvCalculationType"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Calculation Result"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textColor="@color/text_on_dark"
                         android:alpha="0.9"
-                        android:layout_marginBottom="20dp" />
+                        android:layout_marginBottom="12dp" />
 
                     <!-- Future Value - Main Result -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_marginBottom="24dp">
+                        android:layout_marginBottom="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -361,7 +371,7 @@
                         android:layout_height="1dp"
                         android:background="@color/text_on_dark"
                         android:alpha="0.2"
-                        android:layout_marginBottom="24dp" />
+                        android:layout_marginBottom="16dp" />
 
                     <!-- Details Grid -->
                     <GridLayout
@@ -376,7 +386,7 @@
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
                             android:orientation="vertical"
-                            android:layout_marginBottom="16dp">
+                            android:layout_marginBottom="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -400,7 +410,7 @@
                             android:layout_height="wrap_content"
                             android:layout_columnWeight="1"
                             android:orientation="vertical"
-                            android:layout_marginBottom="16dp">
+                            android:layout_marginBottom="12dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -476,28 +486,28 @@
                 style="@style/InputCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="12dp"
                 android:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/label_growth_chart"
                         android:textColor="@color/text_primary"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="16dp" />
+                        android:layout_marginBottom="12dp" />
 
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/growthChart"
                         android:layout_width="match_parent"
-                        android:layout_height="250dp" />
+                        android:layout_height="200dp" />
 
                 </LinearLayout>
 
@@ -506,7 +516,7 @@
             <!-- Bottom Spacing -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="40dp" />
+                android:layout_height="20dp" />
 
         </LinearLayout>
 

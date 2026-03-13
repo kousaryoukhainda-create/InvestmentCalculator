@@ -5,12 +5,13 @@
     <string name="app_subtitle">Plan your financial future with smart calculations</string>
 
     <!-- Hints -->
-    <string name="hint_principal">Principal Amount (₹)</string>
+    <string name="hint_principal">Principal Amount</string>
     <string name="hint_rate">Annual Interest Rate (%)</string>
     <string name="hint_time">Time Period (Years)</string>
-    <string name="hint_monthly_sip">Monthly SIP Amount (₹)</string>
+    <string name="hint_monthly_sip">Monthly SIP Amount</string>
 
     <!-- Labels -->
+    <string name="label_currency">Currency</string>
     <string name="label_frequency">Compounding Frequency</string>
     <string name="label_future_value">Future Value</string>
     <string name="label_interest">Total Interest</string>
@@ -20,6 +21,33 @@
     <string name="label_time_short">Time</string>
     <string name="label_growth_chart">Growth Chart</string>
     <string name="label_preset_rates">Quick Rates</string>
+
+    <!-- Currencies -->
+    <string-array name="currency_codes">
+        <item>USD</item>
+        <item>EUR</item>
+        <item>GBP</item>
+        <item>INR</item>
+        <item>JPY</item>
+        <item>CNY</item>
+        <item>AUD</item>
+        <item>CAD</item>
+        <item>CHF</item>
+        <item>KRW</item>
+    </string-array>
+
+    <string-array name="currency_symbols">
+        <item>$</item>
+        <item>€</item>
+        <item>£</item>
+        <item>₹</item>
+        <item>¥</item>
+        <item>¥</item>
+        <item>A$</item>
+        <item>C$</item>
+        <item>Fr</item>
+        <item>₩</item>
+    </string-array>
 
     <!-- Preset Rate Values -->
     <string name="preset_6pct">6%</string>
@@ -33,6 +61,9 @@
     <string name="btn_simple">Calculate Simple Interest</string>
     <string name="btn_sip">Calculate SIP Returns</string>
     <string name="btn_clear">Clear All</string>
+    <string name="btn_compound_short">Compound</string>
+    <string name="btn_simple_short">Simple</string>
+    <string name="btn_sip_short">SIP</string>
 
     <!-- Error Messages -->
     <string name="error_empty_principal">Enter principal amount</string>
