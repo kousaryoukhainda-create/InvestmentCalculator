@@ -2,6 +2,7 @@ package com.example.investmentcalculator
 
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -10,6 +11,13 @@ import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.example.investmentcalculator.databinding.ActivityMainBinding
 import java.text.NumberFormat
@@ -20,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: InvestmentCalculatorViewModel
     private val indianFormat: NumberFormat = NumberFormat.getNumberInstance(Locale("en", "IN"))
+    private var countUpAnimator: ValueAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +48,9 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, frequencies)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerCompoundFrequency.adapter = adapter
+
+        // Setup preset rate chips
+        setupPresetChips()
 
         // Calculate Compound Interest Button
         binding.btnCalculateCompound.setOnClickListener {
@@ -69,7 +81,12 @@ class MainActivity : AppCompatActivity() {
         binding.btnClear.setOnClickListener {
             viewModel.clear()
             binding.resultCard.visibility = View.GONE
+            binding.chartCard.visibility = View.GONE
             clearFieldErrors()
+            // Clear preset chips
+            listOf(R.id.chip6pct, R.id.chip8pct, R.id.chip10pct, R.id.chip12pct, R.id.chip15pct).forEach { id ->
+                binding.root.findViewById<Chip>(id).isChecked = false
+            }
         }
     }
 
@@ -82,6 +99,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.result.observe(this) { result ->
             if (result != null) {
                 displayResult(result)
+            }
+        }
+
+        viewModel.growthData.observe(this) { data ->
+            if (data.isNotEmpty()) {
+                displayChart(data)
             }
         }
 
@@ -109,7 +132,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayResult(result: CalculationResult) {
         binding.resultCard.visibility = View.VISIBLE
-        
+        binding.chartCard.visibility = View.VISIBLE
+
         // Animate the result card appearance
         animateResultCard()
 
@@ -117,8 +141,10 @@ class MainActivity : AppCompatActivity() {
         binding.tvPrincipal.text = formatCurrency(result.totalInvested)
         binding.tvRate.text = "${result.rate}%"
         binding.tvTime.text = "${result.time} ${if (result.time == 1.0) "year" else "years"}"
-        binding.tvFutureValue.text = formatCurrency(result.futureValue)
-        binding.tvTotalInterest.text = "+ ${formatCurrency(result.totalInterest)}"
+        
+        // Count-up animation for future value and interest
+        animateCountUp(binding.tvFutureValue, 0.0, result.futureValue)
+        animateCountUp(binding.tvTotalInterest, 0.0, result.totalInterest, prefix = "+ ")
 
         // Scroll to results with animation
         binding.scrollView.post {
@@ -147,16 +173,142 @@ class MainActivity : AppCompatActivity() {
         scaleX.start()
         scaleY.start()
         alpha.start()
-
-        // Animate future value counter
-        animateValueCounter()
     }
 
-    private fun animateValueCounter() {
-        val animator = ValueAnimator.ofFloat(0f, 1f)
-        animator.duration = 800
-        animator.interpolator = AccelerateDecelerateInterpolator()
-        animator.start()
+    private fun animateCountUp(targetView: android.widget.TextView, startValue: Double, endValue: Double, prefix: String = "") {
+        countUpAnimator?.cancel()
+        
+        countUpAnimator = ValueAnimator.ofFloat(startValue.toFloat(), endValue.toFloat()).apply {
+            duration = 1200
+            interpolator = AccelerateDecelerateInterpolator()
+            addUpdateListener { animation ->
+                val animatedValue = (animation.animatedValue as Float).toDouble()
+                targetView.text = prefix + formatCurrency(animatedValue)
+            }
+            start()
+        }
+    }
+
+    private fun setupPresetChips() {
+        val presetRates = mapOf(
+            R.id.chip6pct to 6.0,
+            R.id.chip8pct to 8.0,
+            R.id.chip10pct to 10.0,
+            R.id.chip12pct to 12.0,
+            R.id.chip15pct to 15.0
+        )
+
+        presetRates.forEach { (chipId, rate) ->
+            val chip = binding.root.findViewById<Chip>(chipId)
+            chip.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    binding.etRate.setText(rate.toString())
+                    // Clear other chips
+                    presetRates.keys.filter { it != chipId }.forEach { otherId ->
+                        binding.root.findViewById<Chip>(otherId).isChecked = false
+                    }
+                }
+            }
+        }
+    }
+
+    private fun displayChart(growthData: List<GrowthData>) {
+        val chart = binding.growthChart
+        chart.visibility = View.VISIBLE
+
+        // Create entries for principal and interest
+        val principalEntries = growthData.mapIndexed { index, data ->
+            Entry(index.toFloat(), data.principal.toFloat())
+        }
+        val totalValueEntries = growthData.mapIndexed { index, data ->
+            Entry(index.toFloat(), data.totalValue.toFloat())
+        }
+
+        // Principal dataset
+        val principalDataSet = LineDataSet(principalEntries, "Invested").apply {
+            color = ContextCompat.getColor(this@MainActivity, R.color.chart_line_principal)
+            valueTextColor = ContextCompat.getColor(this@MainActivity, R.color.text_primary)
+            lineWidth = 2f
+            setDrawCircles(true)
+            setDrawCircleHole(true)
+            circleRadius = 4f
+            setDrawFilled(true)
+            fillColor = ContextCompat.getColor(this@MainActivity, R.color.chart_fill_principal)
+            fillAlpha = 100
+            mode = LineDataSet.Mode.CUBIC_BEZIER
+            setDrawValues(false)
+        }
+
+        // Total value dataset
+        val totalValueDataSet = LineDataSet(totalValueEntries, "Total Value").apply {
+            color = ContextCompat.getColor(this@MainActivity, R.color.chart_line_interest)
+            valueTextColor = ContextCompat.getColor(this@MainActivity, R.color.text_primary)
+            lineWidth = 2f
+            setDrawCircles(true)
+            setDrawCircleHole(true)
+            circleRadius = 4f
+            setDrawFilled(true)
+            fillColor = ContextCompat.getColor(this@MainActivity, R.color.chart_fill_interest)
+            fillAlpha = 100
+            mode = LineDataSet.Mode.CUBIC_BEZIER
+            setDrawValues(false)
+        }
+
+        // Apply chart data
+        chart.data = LineData(principalDataSet, totalValueDataSet)
+
+        // Customize chart appearance
+        chart.apply {
+            setTouchEnabled(true)
+            isDragEnabled = true
+            setScaleEnabled(false)
+            setPinchZoom(false)
+
+            // X-axis
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                textColor = ContextCompat.getColor(this@MainActivity, R.color.text_secondary)
+                setDrawGridLines(true)
+                gridColor = ContextCompat.getColor(this@MainActivity, R.color.divider)
+                granularity = 1f
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return "Y${value.toInt() + 1}"
+                    }
+                }
+            }
+
+            // Left axis
+            axisLeft.apply {
+                textColor = ContextCompat.getColor(this@MainActivity, R.color.text_secondary)
+                setDrawGridLines(true)
+                gridColor = ContextCompat.getColor(this@MainActivity, R.color.divider)
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return "₹${(value / 100000).toInt()}L"
+                    }
+                }
+            }
+
+            // Right axis - disabled
+            axisRight.isEnabled = false
+
+            // Legend
+            legend.apply {
+                textColor = ContextCompat.getColor(this@MainActivity, R.color.text_primary)
+                orientation = LineChart.LegendOrientation.HORIZONTAL
+                horizontalAlignment = LineChart.LegendHorizontalAlignment.CENTER
+            }
+
+            // Description
+            description.isEnabled = false
+
+            // Animate
+            animateX(800)
+            animateY(800)
+
+            invalidate() // Refresh
+        }
     }
 
     private fun formatCurrency(amount: Double): String {

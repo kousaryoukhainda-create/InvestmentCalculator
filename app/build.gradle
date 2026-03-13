@@ -49,7 +49,7 @@ dependencies {
 
     // ConstraintLayout
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    
+
     // CoordinatorLayout
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
 
@@ -60,6 +60,9 @@ dependencies {
 
     // Fragment
     implementation 'androidx.fragment:fragment-ktx:1.6.2'
+
+    // MPAndroidChart for graphs
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     // Testing
     testImplementation 'junit:junit:4.13.2'

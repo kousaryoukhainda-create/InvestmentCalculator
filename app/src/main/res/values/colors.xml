@@ -51,4 +51,10 @@
     <color name="gradient_start">#4F46E5</color>
     <color name="gradient_end">#7C3AED</color>
 
+    <!-- Chart Colors -->
+    <color name="chart_line_principal">#4F46E5</color>
+    <color name="chart_line_interest">#14B8A6</color>
+    <color name="chart_fill_principal">#404F46E5</color>
+    <color name="chart_fill_interest">#4014B8A6</color>
+
 </resources>

@@ -18,6 +18,15 @@
     <string name="label_interest_earned">Interest Earned</string>
     <string name="label_rate_short">Rate</string>
     <string name="label_time_short">Time</string>
+    <string name="label_growth_chart">Growth Chart</string>
+    <string name="label_preset_rates">Quick Rates</string>
+
+    <!-- Preset Rate Values -->
+    <string name="preset_6pct">6%</string>
+    <string name="preset_8pct">8%</string>
+    <string name="preset_10pct">10%</string>
+    <string name="preset_12pct">12%</string>
+    <string name="preset_15pct">15%</string>
 
     <!-- Buttons -->
     <string name="btn_compound">Calculate Compound Interest</string>

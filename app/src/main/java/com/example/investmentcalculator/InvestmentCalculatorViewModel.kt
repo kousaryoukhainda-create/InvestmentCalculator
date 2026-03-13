@@ -15,6 +15,13 @@ data class CalculationResult(
     val calculationType: String = "Compound Interest"
 )
 
+data class GrowthData(
+    val year: Int,
+    val principal: Double,
+    val interest: Double,
+    val totalValue: Double
+)
+
 class InvestmentCalculatorViewModel : ViewModel() {
 
     val principal = MutableLiveData<String>("")
@@ -22,7 +29,8 @@ class InvestmentCalculatorViewModel : ViewModel() {
     val timeYears = MutableLiveData<String>("")
     val compoundFrequency = MutableLiveData<String>("Monthly")
     val result = MutableLiveData<CalculationResult?>(null)
-    
+    val growthData = MutableLiveData<List<GrowthData>>(emptyList())
+
     // Field-specific error messages
     val principalError = MutableLiveData<String?>(null)
     val rateError = MutableLiveData<String?>(null)
@@ -88,9 +96,42 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 totalInvested = principalValue,
                 calculationType = "Compound Interest"
             )
+
+            // Generate year-by-year growth data for chart
+            generateGrowthData(principalValue, rateValue, timeValue, n, isSIP = false)
         } catch (e: Exception) {
             errorMessage.value = "error_calculation"
         }
+    }
+
+    private fun generateGrowthData(principal: Double, rate: Double, time: Double, n: Int, isSIP: Boolean, monthlyInvestment: Double = 0.0) {
+        val growthList = mutableListOf<GrowthData>()
+        val rateDecimal = rate / 100
+        val years = time.toInt()
+
+        for (year in 1..years) {
+            val yearData = if (isSIP) {
+                // SIP calculation for each year
+                val totalMonths = year * 12
+                val totalPrincipal = monthlyInvestment * totalMonths
+                val monthlyRate = rateDecimal / 12
+                val futureValue = if (monthlyRate > 0) {
+                    monthlyInvestment * (((1 + monthlyRate).pow(totalMonths) - 1) / monthlyRate) * (1 + monthlyRate)
+                } else {
+                    totalPrincipal
+                }
+                val interest = futureValue - totalPrincipal
+                GrowthData(year, totalPrincipal, interest, futureValue)
+            } else {
+                // Compound interest calculation for each year
+                val yearValue = principal * (1 + rateDecimal / n).pow(n * year)
+                val yearInterest = yearValue - principal
+                GrowthData(year, principal, yearInterest, yearValue)
+            }
+            growthList.add(yearData)
+        }
+
+        growthData.value = growthList
     }
 
     fun calculateSimpleInterest() {
@@ -203,6 +244,9 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 totalInvested = totalPrincipal,
                 calculationType = "SIP (Systematic Investment Plan)"
             )
+
+            // Generate year-by-year growth data for chart
+            generateGrowthData(0.0, rateValue, timeValue, 12, isSIP = true, monthlyInvestment = monthlyInvestment)
         } catch (e: Exception) {
             errorMessage.value = "error_calculation"
         }
@@ -214,6 +258,7 @@ class InvestmentCalculatorViewModel : ViewModel() {
         timeYears.value = ""
         compoundFrequency.value = "Monthly"
         result.value = null
+        growthData.value = emptyList()
         clearErrors()
     }
 
