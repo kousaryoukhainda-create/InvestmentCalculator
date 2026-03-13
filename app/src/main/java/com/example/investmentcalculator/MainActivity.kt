@@ -94,6 +94,13 @@ class MainActivity : AppCompatActivity() {
             listOf(R.id.chip6pct, R.id.chip8pct, R.id.chip10pct, R.id.chip12pct, R.id.chip15pct).forEach { id ->
                 binding.root.findViewById<Chip>(id).isChecked = false
             }
+            // Clear input fields
+            binding.etPrincipal.text?.clear()
+            binding.etRate.text?.clear()
+            binding.etTime.text?.clear()
+            binding.etMonthlySIP.text?.clear()
+            // Reset compound frequency spinner
+            binding.spinnerCompoundFrequency.setSelection(3) // Monthly
         }
 
         // Currency spinner listener
@@ -197,6 +204,9 @@ class MainActivity : AppCompatActivity() {
     private fun animateCountUp(targetView: android.widget.TextView, startValue: Double, endValue: Double, prefix: String = "") {
         countUpAnimator?.cancel()
 
+        // Set initial value immediately
+        targetView.text = prefix + formatNumber(startValue)
+
         countUpAnimator = ValueAnimator.ofFloat(startValue.toFloat(), endValue.toFloat()).apply {
             duration = 1200
             interpolator = AccelerateDecelerateInterpolator()
@@ -204,6 +214,12 @@ class MainActivity : AppCompatActivity() {
                 val animatedValue = (animation.animatedValue as Float).toDouble()
                 targetView.text = prefix + formatNumber(animatedValue)
             }
+            addListener(object : android.animation.AnimatorListenerAdapter {
+                override fun onAnimationEnd(animation: android.animation.Animator) {
+                    // Ensure final value is set correctly
+                    targetView.text = prefix + formatNumber(endValue)
+                }
+            })
             start()
         }
     }

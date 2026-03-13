@@ -15,10 +15,7 @@ A native Android application for calculating investment returns with support for
 
 - **SIP Calculator**: Systematic Investment Plan calculator for recurring investments
 
-- **Multi-Currency Support**: Choose from 10 different currencies
-  - USD ($), EUR (€), GBP (£), INR (₹)
-  - JPY (¥), CNY (¥), AUD (A$), CAD (C$)
-  - CHF (Fr), KRW (₩)
+- **Multi-Currency Support**: Choose from 51 world currencies including USD, EUR, GBP, INR, JPY, CNY, AUD, CAD, CHF, KRW, BRL, RUB, ZAR, and many more
 
 - **Compact Material Design UI**: Optimized layout maximizing screen space with Material 3 design
 

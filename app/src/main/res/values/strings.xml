@@ -22,7 +22,7 @@
     <string name="label_growth_chart">Growth Chart</string>
     <string name="label_preset_rates">Quick Rates</string>
 
-    <!-- Currencies -->
+    <!-- Currencies - All World Currencies -->
     <string-array name="currency_codes">
         <item>USD</item>
         <item>EUR</item>
@@ -34,6 +34,47 @@
         <item>CAD</item>
         <item>CHF</item>
         <item>KRW</item>
+        <item>BRL</item>
+        <item>RUB</item>
+        <item>ZAR</item>
+        <item>MXN</item>
+        <item>SGD</item>
+        <item>HKD</item>
+        <item>NOK</item>
+        <item>SEK</item>
+        <item>DKK</item>
+        <item>NZD</item>
+        <item>PLN</item>
+        <item>THB</item>
+        <item>MYR</item>
+        <item>IDR</item>
+        <item>PHP</item>
+        <item>CZK</item>
+        <item>HUF</item>
+        <item>ILS</item>
+        <item>CLP</item>
+        <item>AED</item>
+        <item>SAR</item>
+        <item>ARS</item>
+        <item>EGP</item>
+        <item>PKR</item>
+        <item>VND</item>
+        <item>BDT</item>
+        <item>NGN</item>
+        <item>UAH</item>
+        <item>KES</item>
+        <item>QAR</item>
+        <item>KWD</item>
+        <item>OMR</item>
+        <item>BHD</item>
+        <item>JOD</item>
+        <item>LKR</item>
+        <item>MAD</item>
+        <item>RON</item>
+        <item>BGN</item>
+        <item>HRK</item>
+        <item>ISK</item>
+        <item>TRY</item>
     </string-array>
 
     <string-array name="currency_symbols">
@@ -47,6 +88,47 @@
         <item>C$</item>
         <item>Fr</item>
         <item>₩</item>
+        <item>R$</item>
+        <item>₽</item>
+        <item>R</item>
+        <item>$</item>
+        <item>S$</item>
+        <item>HK$</item>
+        <item>kr</item>
+        <item>kr</item>
+        <item>kr</item>
+        <item>NZ$</item>
+        <item>zł</item>
+        <item>฿</item>
+        <item>RM</item>
+        <item>Rp</item>
+        <item>₱</item>
+        <item>Kč</item>
+        <item>Ft</item>
+        <item>₪</item>
+        <item>$</item>
+        <item>د.إ</item>
+        <item>﷼</item>
+        <item>$</item>
+        <item>E£</item>
+        <item>₨</item>
+        <item>₫</item>
+        <item>৳</item>
+        <item>₦</item>
+        <item>₴</item>
+        <item>KSh</item>
+        <item>﷼</item>
+        <item>د.ك</item>
+        <item>﷼</item>
+        <item>.د.ب</item>
+        <item>د.ا</item>
+        <item>₨</item>
+        <item>د.م.</item>
+        <item>lei</item>
+        <item>лв</item>
+        <item>kn</item>
+        <item>kr</item>
+        <item>₺</item>
     </string-array>
 
     <!-- Preset Rate Values -->
