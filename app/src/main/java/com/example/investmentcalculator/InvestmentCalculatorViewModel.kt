@@ -11,30 +11,55 @@ data class CalculationResult(
     val compoundFrequency: Int = 12,
     val futureValue: Double = 0.0,
     val totalInterest: Double = 0.0,
+    val totalInvested: Double = 0.0,
     val calculationType: String = "Compound Interest"
 )
 
 class InvestmentCalculatorViewModel : ViewModel() {
-    
+
     val principal = MutableLiveData<String>("")
     val annualRate = MutableLiveData<String>("")
     val timeYears = MutableLiveData<String>("")
     val compoundFrequency = MutableLiveData<String>("Monthly")
     val result = MutableLiveData<CalculationResult?>(null)
+    
+    // Field-specific error messages
+    val principalError = MutableLiveData<String?>(null)
+    val rateError = MutableLiveData<String?>(null)
+    val timeError = MutableLiveData<String?>(null)
+    val sipError = MutableLiveData<String?>(null)
     val errorMessage = MutableLiveData<String?>(null)
 
     fun calculateCompoundInterest() {
+        // Clear previous errors
+        clearErrors()
+        
         try {
-            errorMessage.value = null
+            val p = principal.value?.toDoubleOrNull()
+            val r = annualRate.value?.toDoubleOrNull()
+            val t = timeYears.value?.toDoubleOrNull()
+
+            // Validate inputs with field-specific errors
+            var hasError = false
             
-            val p = principal.value?.toDoubleOrNull() ?: return showError("Enter principal amount")
-            val r = annualRate.value?.toDoubleOrNull() ?: return showError("Enter annual rate")
-            val t = timeYears.value?.toDoubleOrNull() ?: return showError("Enter time period")
-            
-            if (p <= 0) return showError("Principal must be greater than 0")
-            if (r < 0) return showError("Rate cannot be negative")
-            if (t <= 0) return showError("Time must be greater than 0")
-            
+            if (p == null || p <= 0) {
+                principalError.value = "error_invalid_principal"
+                hasError = true
+            }
+            if (r == null) {
+                rateError.value = "error_empty_rate"
+                hasError = true
+            } else if (r < 0) {
+                rateError.value = "error_negative_rate"
+                hasError = true
+            }
+            if (t == null || t <= 0) {
+                timeError.value = "error_invalid_time"
+                hasError = true
+            }
+
+            if (hasError) return
+
             val n = when (compoundFrequency.value) {
                 "Annually" -> 1
                 "Semi-Annually" -> 2
@@ -43,11 +68,11 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 "Daily" -> 365
                 else -> 12
             }
-            
+
             val rateDecimal = r / 100
             val futureValue = p * (1 + rateDecimal / n).pow(n * t)
             val totalInterest = futureValue - p
-            
+
             result.value = CalculationResult(
                 principal = p,
                 rate = r,
@@ -55,29 +80,48 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 compoundFrequency = n,
                 futureValue = futureValue,
                 totalInterest = totalInterest,
+                totalInvested = p,
                 calculationType = "Compound Interest"
             )
         } catch (e: Exception) {
-            showError("Calculation error: ${e.message}")
+            errorMessage.value = "error_calculation"
         }
     }
 
     fun calculateSimpleInterest() {
+        // Clear previous errors
+        clearErrors()
+        
         try {
-            errorMessage.value = null
+            val p = principal.value?.toDoubleOrNull()
+            val r = annualRate.value?.toDoubleOrNull()
+            val t = timeYears.value?.toDoubleOrNull()
+
+            // Validate inputs with field-specific errors
+            var hasError = false
             
-            val p = principal.value?.toDoubleOrNull() ?: return showError("Enter principal amount")
-            val r = annualRate.value?.toDoubleOrNull() ?: return showError("Enter annual rate")
-            val t = timeYears.value?.toDoubleOrNull() ?: return showError("Enter time period")
-            
-            if (p <= 0) return showError("Principal must be greater than 0")
-            if (r < 0) return showError("Rate cannot be negative")
-            if (t <= 0) return showError("Time must be greater than 0")
-            
+            if (p == null || p <= 0) {
+                principalError.value = "error_invalid_principal"
+                hasError = true
+            }
+            if (r == null) {
+                rateError.value = "error_empty_rate"
+                hasError = true
+            } else if (r < 0) {
+                rateError.value = "error_negative_rate"
+                hasError = true
+            }
+            if (t == null || t <= 0) {
+                timeError.value = "error_invalid_time"
+                hasError = true
+            }
+
+            if (hasError) return
+
             val rateDecimal = r / 100
             val totalInterest = p * rateDecimal * t
             val futureValue = p + totalInterest
-            
+
             result.value = CalculationResult(
                 principal = p,
                 rate = r,
@@ -85,36 +129,56 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 compoundFrequency = 1,
                 futureValue = futureValue,
                 totalInterest = totalInterest,
+                totalInvested = p,
                 calculationType = "Simple Interest"
             )
         } catch (e: Exception) {
-            showError("Calculation error: ${e.message}")
+            errorMessage.value = "error_calculation"
         }
     }
 
-    fun calculateSIP(monthlyInvestment: Double) {
+    fun calculateSIP() {
+        // Clear previous errors
+        clearErrors()
+        
         try {
-            errorMessage.value = null
+            val monthlyInvestment = principal.value?.toDoubleOrNull() ?: 0.0
+            val r = annualRate.value?.toDoubleOrNull()
+            val t = timeYears.value?.toDoubleOrNull()
+
+            // Validate inputs with field-specific errors
+            var hasError = false
             
-            val r = annualRate.value?.toDoubleOrNull() ?: return showError("Enter annual rate")
-            val t = timeYears.value?.toDoubleOrNull() ?: return showError("Enter time period")
-            
-            if (monthlyInvestment <= 0) return showError("Monthly investment must be greater than 0")
-            if (r < 0) return showError("Rate cannot be negative")
-            if (t <= 0) return showError("Time must be greater than 0")
-            
+            if (monthlyInvestment <= 0) {
+                principalError.value = "error_invalid_sip"
+                hasError = true
+            }
+            if (r == null) {
+                rateError.value = "error_empty_rate"
+                hasError = true
+            } else if (r < 0) {
+                rateError.value = "error_negative_rate"
+                hasError = true
+            }
+            if (t == null || t <= 0) {
+                timeError.value = "error_invalid_time"
+                hasError = true
+            }
+
+            if (hasError) return
+
             val monthlyRate = r / 100 / 12
             val totalMonths = (t * 12).toInt()
             val totalPrincipal = monthlyInvestment * totalMonths
-            
+
             val futureValue = if (monthlyRate > 0) {
                 monthlyInvestment * (((1 + monthlyRate).pow(totalMonths) - 1) / monthlyRate) * (1 + monthlyRate)
             } else {
                 totalPrincipal
             }
-            
+
             val totalInterest = futureValue - totalPrincipal
-            
+
             result.value = CalculationResult(
                 principal = totalPrincipal,
                 rate = r,
@@ -122,10 +186,11 @@ class InvestmentCalculatorViewModel : ViewModel() {
                 compoundFrequency = 12,
                 futureValue = futureValue,
                 totalInterest = totalInterest,
+                totalInvested = totalPrincipal,
                 calculationType = "SIP (Systematic Investment Plan)"
             )
         } catch (e: Exception) {
-            showError("Calculation error: ${e.message}")
+            errorMessage.value = "error_calculation"
         }
     }
 
@@ -135,6 +200,14 @@ class InvestmentCalculatorViewModel : ViewModel() {
         timeYears.value = ""
         compoundFrequency.value = "Monthly"
         result.value = null
+        clearErrors()
+    }
+
+    private fun clearErrors() {
+        principalError.value = null
+        rateError.value = null
+        timeError.value = null
+        sipError.value = null
         errorMessage.value = null
     }
 

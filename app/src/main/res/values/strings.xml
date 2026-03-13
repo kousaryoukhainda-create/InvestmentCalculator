@@ -2,27 +2,41 @@
 <resources>
     <string name="app_name">Investment Calculator</string>
     <string name="app_title">Investment Calculator</string>
-    <string name="app_subtitle">Calculate your future investment value</string>
+    <string name="app_subtitle">Plan your financial future with smart calculations</string>
 
     <!-- Hints -->
-    <string name="hint_principal">Principal Amount</string>
+    <string name="hint_principal">Principal Amount (₹)</string>
     <string name="hint_rate">Annual Interest Rate (%)</string>
     <string name="hint_time">Time Period (Years)</string>
-    <string name="hint_monthly_sip">Monthly Investment (SIP)</string>
+    <string name="hint_monthly_sip">Monthly SIP Amount (₹)</string>
 
     <!-- Labels -->
     <string name="label_frequency">Compounding Frequency</string>
     <string name="label_future_value">Future Value</string>
     <string name="label_interest">Total Interest</string>
+    <string name="label_principal_invested">Invested</string>
+    <string name="label_interest_earned">Interest Earned</string>
+    <string name="label_rate_short">Rate</string>
+    <string name="label_time_short">Time</string>
 
     <!-- Buttons -->
     <string name="btn_compound">Calculate Compound Interest</string>
     <string name="btn_simple">Calculate Simple Interest</string>
-    <string name="btn_sip">Calculate SIP</string>
+    <string name="btn_sip">Calculate SIP Returns</string>
     <string name="btn_clear">Clear All</string>
 
     <!-- Error Messages -->
-    <string name="error_empty_field">Please fill all required fields</string>
-    <string name="error_invalid_input">Invalid input value</string>
+    <string name="error_empty_principal">Enter principal amount</string>
+    <string name="error_empty_rate">Enter interest rate</string>
+    <string name="error_empty_time">Enter time period</string>
+    <string name="error_empty_sip">Enter monthly SIP amount</string>
+    <string name="error_invalid_principal">Principal must be greater than 0</string>
+    <string name="error_negative_rate">Rate cannot be negative</string>
+    <string name="error_invalid_time">Time must be greater than 0</string>
+    <string name="error_invalid_sip">SIP amount must be greater than 0</string>
+    <string name="error_calculation">Calculation error</string>
+
+    <!-- Success Messages -->
+    <string name="success_calculation">Calculation completed</string>
 
 </resources>
