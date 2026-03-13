@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         // Clear Button
         binding.btnClear.setOnClickListener {
             viewModel.clear()
-            binding.etMonthlySIP.text.clear()
+            binding.etMonthlySIP.text?.clear()
             binding.resultCard.visibility = View.GONE
         }
     }
