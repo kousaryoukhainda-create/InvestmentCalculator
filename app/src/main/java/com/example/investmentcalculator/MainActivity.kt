@@ -42,16 +42,26 @@ class MainActivity : AppCompatActivity() {
 
         // Calculate Compound Interest Button
         binding.btnCalculateCompound.setOnClickListener {
+            viewModel.principal.value = binding.etPrincipal.text.toString()
+            viewModel.annualRate.value = binding.etRate.text.toString()
+            viewModel.timeYears.value = binding.etTime.text.toString()
+            viewModel.compoundFrequency.value = binding.spinnerCompoundFrequency.selectedItem.toString()
             viewModel.calculateCompoundInterest()
         }
 
         // Calculate Simple Interest Button
         binding.btnCalculateSimple.setOnClickListener {
+            viewModel.principal.value = binding.etPrincipal.text.toString()
+            viewModel.annualRate.value = binding.etRate.text.toString()
+            viewModel.timeYears.value = binding.etTime.text.toString()
             viewModel.calculateSimpleInterest()
         }
 
         // Calculate SIP Button - now uses principal field as monthly investment
         binding.btnCalculateSIP.setOnClickListener {
+            viewModel.principal.value = binding.etPrincipal.text.toString()
+            viewModel.annualRate.value = binding.etRate.text.toString()
+            viewModel.timeYears.value = binding.etTime.text.toString()
             viewModel.calculateSIP()
         }
 
